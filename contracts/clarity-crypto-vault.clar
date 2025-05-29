@@ -36,5 +36,56 @@
     )
 )
 
+(define-private (verify-tags-collection (tag-collection (list 5 (string-ascii 30))))
+    (and
+        (>= (len tag-collection) u1)
+        (<= (len tag-collection) u5)
+        (is-eq (len (filter verify-tag-format tag-collection)) (len tag-collection))
+    )
+)
 
+(define-private (verify-tag-format (tag (string-ascii 30)))
+    (and
+        (> (len tag) u0)
+        (<= (len tag) u30)
+    )
+)
 
+;; Primary Data Storage Structures
+(define-map archive-entries
+    { entry-id: uint }
+    {
+        label: (string-ascii 50),
+        custodian: principal,
+        integrity-signature: (string-ascii 64),
+        supplementary-data: (string-ascii 200),
+        timestamp-created: uint,
+        timestamp-updated: uint,
+        taxonomy: (string-ascii 20),
+        tags: (list 5 (string-ascii 30))
+    }
+)
+
+(define-map collaboration-registry
+    { entry-id: uint, collaborator: principal }
+    {
+        permission-tier: (string-ascii 10),
+        timestamp-assigned: uint,
+        timestamp-termination: uint,
+        editing-privileges: bool
+    }
+)
+
+(define-private (verify-supplementary-data (data (string-ascii 200)))
+    (and
+        (>= (len data) u1)
+        (<= (len data) u200)
+    )
+)
+
+(define-private (verify-taxonomy (taxonomy-value (string-ascii 20)))
+    (and
+        (>= (len taxonomy-value) u1)
+        (<= (len taxonomy-value) u20)
+    )
+)
